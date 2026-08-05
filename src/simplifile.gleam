@@ -410,14 +410,20 @@ pub fn append_bits(
 
 /// Checks if the provided filepath exists and is a directory.
 /// Returns an error if it lacks permissions to read the directory.
+/// Returns `Ok(False)` if the path points to a regular file.
+/// Follows symlinks, i.e. returns `Ok(True)` if the path is a symlink to a directory.
 ///
 /// ## Example
 /// ```gleam
 /// let assert Ok(True) = is_directory("./test")
 /// ```
-@external(erlang, "simplifile_erl", "is_directory")
-@external(javascript, "./simplifile_js.mjs", "isDirectory")
-pub fn is_directory(filepath: String) -> Result(Bool, FileError)
+pub fn is_directory(filepath: String) -> Result(Bool, FileError) {
+  case file_info(filepath) {
+    Ok(info) -> Ok(file_info_type(info) == Directory)
+    Error(Enoent) -> Ok(False)
+    Error(e) -> Error(e)
+  }
+}
 
 /// Create a directory at the provided filepath. Returns an error if
 /// the directory already exists.
@@ -476,28 +482,56 @@ pub fn create_link(
 pub fn read_directory(at path: String) -> Result(List(String), FileError)
 
 /// Checks if the file at the provided filepath exists and is a file.
-/// Returns an Error if it lacks permissions to read the file.
+/// Returns an error if it lacks permissions to read the file.
+/// Returns `Ok(False)` if the path points to a directory.
+/// Follows symlinks, i.e. if the path is a symlink to a file, returns `Ok(True)`.
 ///
 /// ## Example
 /// ```gleam
 /// let assert Ok(True) = is_file("./test.txt")
 /// ```
 ///
-@external(erlang, "simplifile_erl", "is_file")
-@external(javascript, "./simplifile_js.mjs", "isFile")
-pub fn is_file(filepath: String) -> Result(Bool, FileError)
+pub fn is_file(filepath: String) -> Result(Bool, FileError) {
+  case file_info(filepath) {
+    Ok(info) -> Ok(file_info_type(info) == File)
+    Error(Enoent) -> Ok(False)
+    Error(e) -> Error(e)
+  }
+}
 
 /// Checks if the file at the provided filepath exists and is a symbolic link.
-/// Returns an Error if it lacks permissions to read the file.
+/// Returns an error if it lacks permissions to read the file.
 ///
 /// ## Example
 /// ```gleam
 /// let assert Ok(True) = is_symlink("./symlink")
 /// ```
 ///
-@external(erlang, "simplifile_erl", "is_symlink")
-@external(javascript, "./simplifile_js.mjs", "isSymlink")
-pub fn is_symlink(filepath: String) -> Result(Bool, FileError)
+pub fn is_symlink(filepath: String) -> Result(Bool, FileError) {
+  case link_info(filepath) {
+    Ok(info) -> Ok(file_info_type(info) == Symlink)
+    Error(Enoent) -> Ok(False)
+    Error(e) -> Error(e)
+  }
+}
+
+/// Checks if anything exists at the path.
+/// If `follow_links` is true, it will follow a link, returning false if nothing is there.
+/// If `follow_links` is false, it will return true for any symlink.
+pub fn exists(
+  filepath filepath: String,
+  follow_links follow_links: Bool,
+) -> Result(Bool, FileError) {
+  let lookup = case follow_links {
+    True -> file_info
+    False -> link_info
+  }
+  case lookup(filepath) {
+    Ok(_) -> Ok(True)
+    Error(Enoent) -> Ok(False)
+    Error(e) -> Error(e)
+  }
+}
 
 /// Creates an empty file at the given filepath. Returns an `Error(Eexist)`
 /// if the file already exists.
@@ -565,7 +599,10 @@ pub fn rename_file(at src: String, to dest: String) -> Result(Nil, FileError)
 pub fn rename(at src: String, to dest: String) -> Result(Nil, FileError)
 
 /// Copy a directory recursively
-pub fn copy_directory(at src: String, to dest: String) -> Result(Nil, FileError) {
+pub fn copy_directory(
+  at src: String,
+  to dest: String,
+) -> Result(Nil, FileError) {
   // Erlang does not provide a built in `copy_dir` function,
   // and Deno doesn't support Node's `fs.cpSync`, so we'll just roll
   // our own for now.

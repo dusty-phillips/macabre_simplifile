@@ -68,42 +68,6 @@ function toUint8Array(contents) {
 }
 
 /**
- * Check whether a file exists at the given path
- *
- * @param {string} filepath
- * @returns {Ok | GError}
- */
-export function isFile(filepath) {
-  try {
-    return new Ok(fs.statSync(path.normalize(filepath)).isFile());
-  } catch (e) {
-    if (e.code === "ENOENT") {
-      return new Ok(false);
-    } else {
-      return new GError(cast_error(e.code));
-    }
-  }
-}
-
-/**
- * Check whether a symbolic link exists at the given path
- *
- * @param {string} filepath
- * @returns {Ok | GError}
- */
-export function isSymlink(filepath) {
-  try {
-    return new Ok(fs.lstatSync(path.normalize(filepath)).isSymbolicLink());
-  } catch (e) {
-    if (e.code === "ENOENT") {
-      return new Ok(false);
-    } else {
-      return new GError(cast_error(e.code));
-    }
-  }
-}
-
-/**
  * Check whether a directory exists at the given path
  *
  * @param {string} filepath

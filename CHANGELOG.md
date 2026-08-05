@@ -4,6 +4,9 @@
 
 --
 
+## v2.7.0 - 5 August 2026
+- Add `exists` function for checking if a file, directory, or symlink exists at all at a given path.
+
 ## v2.6.0 - 18 July 2026
 - Add `touch` function, which creates a file if it doesn't exist and updates its access and modification times to now if it does.
 
