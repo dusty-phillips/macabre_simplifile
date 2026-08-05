@@ -410,8 +410,8 @@ pub fn append_bits(
 
 /// Checks if the provided filepath exists and is a directory.
 /// Returns an error if it lacks permissions to read the directory.
-/// Returns Ok(False) if the path points to a regular file.
-/// Follows symlinks, i.e. returns Ok(True) if the path is a symlink to a directory.
+/// Returns `Ok(False)` if the path points to a regular file.
+/// Follows symlinks, i.e. returns `Ok(True)` if the path is a symlink to a directory.
 ///
 /// ## Example
 /// ```gleam
@@ -482,9 +482,9 @@ pub fn create_link(
 pub fn read_directory(at path: String) -> Result(List(String), FileError)
 
 /// Checks if the file at the provided filepath exists and is a file.
-/// Returns an Error if it lacks permissions to read the file.
-/// Returns Ok(False) if the path points to a directory.
-/// Follows symlinks, i.e. if the path is a symlink to a file, return Ok(True).
+/// Returns an error if it lacks permissions to read the file.
+/// Returns `Ok(False)` if the path points to a directory.
+/// Follows symlinks, i.e. if the path is a symlink to a file, returns `Ok(True)`.
 ///
 /// ## Example
 /// ```gleam
@@ -500,7 +500,7 @@ pub fn is_file(filepath: String) -> Result(Bool, FileError) {
 }
 
 /// Checks if the file at the provided filepath exists and is a symbolic link.
-/// Returns an Error if it lacks permissions to read the file.
+/// Returns an error if it lacks permissions to read the file.
 ///
 /// ## Example
 /// ```gleam
