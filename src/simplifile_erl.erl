@@ -20,9 +20,6 @@
     delete_directory/1,
     file_info/1,
     link_info/1,
-    is_directory/1,
-    is_file/1,
-    is_symlink/1,
     read_bits/1,
     read_directory/1,
     rename_file/2,
@@ -159,51 +156,6 @@ rename_file(Source, Destination) ->
 %% Set the permissions for the given file.
 set_permissions_octal(Filename, Permissions) ->
     posix_result(file:change_mode(Filename, Permissions)).
-
-is_directory(Path) ->
-    case file:read_file_info(Path) of
-        {ok, FileInfo} ->
-            case FileInfo#file_info.type of
-                directory ->
-                    {ok, true};
-                _ ->
-                    {ok, false}
-            end;
-        {error, enoent} ->
-            {ok, false};
-        {error, Reason} ->
-            posix_result({error, Reason})
-    end.
-
-is_file(Path) ->
-    case file:read_file_info(Path) of
-        {ok, FileInfo} ->
-            case FileInfo#file_info.type of
-                regular ->
-                    {ok, true};
-                _ ->
-                    {ok, false}
-            end;
-        {error, enoent} ->
-            {ok, false};
-        {error, Reason} ->
-            posix_result({error, Reason})
-    end.
-
-is_symlink(Path) ->
-    case file:read_link_info(Path) of
-        {ok, FileInfo} ->
-            case FileInfo#file_info.type of
-                symlink ->
-                    {ok, true};
-                _ ->
-                    {ok, false}
-            end;
-        {error, enoent} ->
-            {ok, false};
-        {error, Reason} ->
-            posix_result({error, Reason})
-    end.
 
     %% For information on the file_info record refer to
     %% https://www.erlang.org/doc/apps/kernel/file.html#t:file_info/0
