@@ -12,7 +12,7 @@ import simplifile.{
   Esrch, Estale, Etxtbsy, Exdev, Execute, File, FilePermissions, NotUtf8, Read,
   Unknown, Write, append, append_bits, copy, copy_directory, copy_file,
   create_directory, create_directory_all, create_file, create_link,
-  create_symlink, delete, delete_all, delete_file, file_info,
+  create_symlink, delete, delete_all, delete_file, exists, file_info,
   file_info_permissions, file_info_permissions_octal, file_info_type,
   file_permissions_to_octal, get_files, is_directory, is_file, is_symlink,
   link_info, read, read_bits, read_directory, rename, set_permissions,
@@ -230,6 +230,46 @@ pub fn is_symlink_test() {
   let assert Ok(_) = delete(symlink_to_existing_dir)
   let assert Ok(_) = delete("./tmp/" <> existing_dir_target_for_symlink)
   let assert Ok(_) = delete(the_symlink)
+}
+
+pub fn exists_test() {
+  // Nothing at the path
+  let assert Ok(False) = exists("./tmp/does_not_exist", follow_links: True)
+  let assert Ok(False) = exists("./tmp/does_not_exist", follow_links: False)
+
+  // A regular file
+  let filepath = "./tmp/exists_test.txt"
+  let assert Ok(_) =
+    ""
+    |> write(to: filepath)
+  let assert Ok(True) = exists(filepath, follow_links: True)
+  let assert Ok(True) = exists(filepath, follow_links: False)
+
+  // A directory
+  let assert Ok(True) = exists("./tmp", follow_links: True)
+  let assert Ok(True) = exists("./tmp", follow_links: False)
+
+  // A symlink pointing at something that exists
+  let symlink_target = "exists_test_target.txt"
+  let symlink_to_existing_target = "./tmp/exists_test_valid_symlink"
+  let assert Ok(_) =
+    ""
+    |> write(to: "./tmp/" <> symlink_target)
+  let assert Ok(_) = create_symlink(symlink_target, symlink_to_existing_target)
+  let assert Ok(True) = exists(symlink_to_existing_target, follow_links: True)
+  let assert Ok(True) = exists(symlink_to_existing_target, follow_links: False)
+
+  // A broken symlink: exists when not following links, doesn't when following
+  let broken_symlink = "./tmp/exists_test_broken_symlink"
+  let assert Ok(_) = create_symlink("does_not_exist_target", broken_symlink)
+  let assert Ok(False) = exists(broken_symlink, follow_links: True)
+  let assert Ok(True) = exists(broken_symlink, follow_links: False)
+
+  // Cleanup
+  let assert Ok(_) = delete(filepath)
+  let assert Ok(_) = delete(symlink_to_existing_target)
+  let assert Ok(_) = delete("./tmp/" <> symlink_target)
+  let assert Ok(_) = delete(broken_symlink)
 }
 
 pub fn create_all_test() {

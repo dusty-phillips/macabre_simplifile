@@ -515,6 +515,24 @@ pub fn is_symlink(filepath: String) -> Result(Bool, FileError) {
   }
 }
 
+/// Checks if anything exists at the path.
+/// If `follow_links` is true, it will follow a link, returning false if nothing is there.
+/// If `follow_links` is false, it will return true for any symlink.
+pub fn exists(
+  filepath filepath: String,
+  follow_links follow_links: Bool,
+) -> Result(Bool, FileError) {
+  let lookup = case follow_links {
+    True -> file_info
+    False -> link_info
+  }
+  case lookup(filepath) {
+    Ok(_) -> Ok(True)
+    Error(Enoent) -> Ok(False)
+    Error(e) -> Error(e)
+  }
+}
+
 /// Creates an empty file at the given filepath. Returns an `Error(Eexist)`
 /// if the file already exists.
 ///
