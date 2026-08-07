@@ -276,8 +276,7 @@ pub fn file_info_type(from file_info: FileInfo) -> FileType {
 /// the symlink and return information about the target file.
 ///
 /// See `link_info` if you want to get information about a symlink instead.
-@external(erlang, "simplifile_erl", "file_info")
-@external(javascript, "./simplifile_js.mjs", "fileInfo")
+@external(python, "simplifile_bindings", "file_info")
 pub fn file_info(filepath: String) -> Result(FileInfo, FileError)
 
 /// Get information about a file at a given path
@@ -286,8 +285,7 @@ pub fn file_info(filepath: String) -> Result(FileInfo, FileError)
 /// infromation about the symlink itself.
 ///
 /// See `file_info` if you want to follow symlinks instead.
-@external(erlang, "simplifile_erl", "link_info")
-@external(javascript, "./simplifile_js.mjs", "linkInfo")
+@external(python, "simplifile_bindings", "link_info")
 pub fn link_info(filepath: String) -> Result(FileInfo, FileError)
 
 /// Read a files contents as a string
@@ -330,15 +328,13 @@ pub fn write(
 /// ```gleam
 /// let assert Ok(Nil) = delete(file_at: "./delete_me.txt")
 /// ```
-@external(erlang, "simplifile_erl", "delete")
-@external(javascript, "./simplifile_js.mjs", "delete_")
+@external(python, "simplifile_bindings", "delete")
 pub fn delete(file_or_dir_at path: String) -> Result(Nil, FileError)
 
 /// Delete a file. 
 /// On Erlang, if you're specifically deleting a single file, this function 
 /// should be more efficient than `delete` because it can pass the raw option.
-@external(erlang, "simplifile_erl", "delete_file")
-@external(javascript, "./simplifile_js.mjs", "deleteFile")
+@external(python, "simplifile_bindings", "delete_file")
 pub fn delete_file(at path: String) -> Result(Nil, FileError)
 
 /// Delete all files/directories specified in a list of paths.
@@ -378,8 +374,7 @@ pub fn append(
 /// ```gleam
 /// let assert Ok(records) = read_bits(from: "./users.csv")
 /// ```
-@external(erlang, "simplifile_erl", "read_bits")
-@external(javascript, "./simplifile_js.mjs", "readBits")
+@external(python, "simplifile_bindings", "read_bits")
 pub fn read_bits(from filepath: String) -> Result(BitArray, FileError)
 
 /// Write a bitstring to a file at the given path
@@ -388,8 +383,7 @@ pub fn read_bits(from filepath: String) -> Result(BitArray, FileError)
 /// let assert Ok(Nil) = write_bits(to: "./hello_world.txt", bits: <<"Hello, World!":utf8>>)
 /// ```
 ///
-@external(erlang, "simplifile_erl", "write_bits")
-@external(javascript, "./simplifile_js.mjs", "writeBits")
+@external(python, "simplifile_bindings", "write_bits")
 pub fn write_bits(
   to filepath: String,
   bits bits: BitArray,
@@ -401,8 +395,7 @@ pub fn write_bits(
 /// let assert Ok(Nil) = append_bits(to: "./needs_more_text.txt", bits: <<"more text":utf8>>)
 /// ```
 ///
-@external(erlang, "simplifile_erl", "append_bits")
-@external(javascript, "./simplifile_js.mjs", "appendBits")
+@external(python, "simplifile_bindings", "append_bits")
 pub fn append_bits(
   to filepath: String,
   bits bits: BitArray,
@@ -432,8 +425,7 @@ pub fn is_directory(filepath: String) -> Result(Bool, FileError) {
 /// ```gleam
 /// create_directory("./test")
 /// ```
-@external(erlang, "simplifile_erl", "create_directory")
-@external(javascript, "./simplifile_js.mjs", "createDirectory")
+@external(python, "simplifile_bindings", "create_directory")
 pub fn create_directory(filepath: String) -> Result(Nil, FileError)
 
 /// Create a symbolic link called symlink pointing to target.
@@ -447,8 +439,7 @@ pub fn create_directory(filepath: String) -> Result(Nil, FileError)
 /// ```gleam
 /// create_symlink("../target", "./symlink")
 /// ```
-@external(erlang, "simplifile_erl", "create_symlink")
-@external(javascript, "./simplifile_js.mjs", "createSymlink")
+@external(python, "simplifile_bindings", "create_symlink")
 pub fn create_symlink(
   to target: String,
   from symlink: String,
@@ -462,8 +453,7 @@ pub fn create_symlink(
 /// ```gleam
 /// create_link("../target", "./link")
 /// ```
-@external(erlang, "simplifile_erl", "create_link")
-@external(javascript, "./simplifile_js.mjs", "createLink")
+@external(python, "simplifile_bindings", "create_link")
 pub fn create_link(
   to target: String,
   from link: String,
@@ -477,8 +467,7 @@ pub fn create_link(
 /// let assert Ok(files_and_folders) = read_directory(at: "./Folder1")
 /// ```
 ///
-@external(erlang, "simplifile_erl", "read_directory")
-@external(javascript, "./simplifile_js.mjs", "readDirectory")
+@external(python, "simplifile_bindings", "read_directory")
 pub fn read_directory(at path: String) -> Result(List(String), FileError)
 
 /// Checks if the file at the provided filepath exists and is a file.
@@ -551,8 +540,7 @@ pub fn create_directory_all(dirpath: String) -> Result(Nil, FileError) {
   do_create_dir_all(dirpath <> "/")
 }
 
-@external(erlang, "simplifile_erl", "create_dir_all")
-@external(javascript, "./simplifile_js.mjs", "createDirAll")
+@external(python, "simplifile_bindings", "create_dir_all")
 fn do_create_dir_all(dirpath: String) -> Result(Nil, FileError)
 
 /// Copy a file or a directory to a new path. Copies directories recursively.
@@ -582,20 +570,17 @@ pub fn copy_file(at src: String, to dest: String) -> Result(Nil, FileError) {
   |> result.replace(Nil)
 }
 
-@external(erlang, "file", "copy")
-@external(javascript, "./simplifile_js.mjs", "copyFile")
+@external(python, "simplifile_bindings", "copy_file")
 fn do_copy_file(src: String, dest: String) -> Result(Int, FileError)
 
 /// Rename a file at a given path to another path.
 /// Note: destination should include the filename, not just the directory
 @deprecated("This function can move a file or a directory, so it's being renamed `rename`.")
-@external(erlang, "simplifile_erl", "rename_file")
-@external(javascript, "./simplifile_js.mjs", "renameFile")
+@external(python, "simplifile_bindings", "rename_file")
 pub fn rename_file(at src: String, to dest: String) -> Result(Nil, FileError)
 
 /// Rename a file or directory.
-@external(erlang, "simplifile_erl", "rename_file")
-@external(javascript, "./simplifile_js.mjs", "renameFile")
+@external(python, "simplifile_bindings", "rename_file")
 pub fn rename(at src: String, to dest: String) -> Result(Nil, FileError)
 
 /// Copy a directory recursively
@@ -770,8 +755,7 @@ pub fn set_permissions(
 /// ```gleam
 /// set_permissions_octal("./script.sh", 0o777)
 /// ```
-@external(erlang, "simplifile_erl", "set_permissions_octal")
-@external(javascript, "./simplifile_js.mjs", "setPermissionsOctal")
+@external(python, "simplifile_bindings", "set_permissions_octal")
 pub fn set_permissions_octal(
   for_file_at filepath: String,
   to permissions: Int,
@@ -779,14 +763,8 @@ pub fn set_permissions_octal(
 
 /// Returns the current working directory
 ///
-@external(javascript, "./simplifile_js.mjs", "currentDirectory")
-pub fn current_directory() -> Result(String, FileError) {
-  erl_do_current_directory()
-  |> result.map(string.from_utf_codepoints)
-}
-
-@external(erlang, "file", "get_cwd")
-fn erl_do_current_directory() -> Result(List(UtfCodepoint), FileError)
+@external(python, "simplifile_bindings", "current_directory")
+pub fn current_directory() -> Result(String, FileError)
 
 /// Converts a relative path to an absolute path which starts in the current working directory.
 ///
@@ -810,8 +788,7 @@ pub fn resolve(path path: String) -> Result(String, FileError) {
   |> result.replace_error(Enoent)
 }
 
-@external(erlang, "filename", "absname")
-@external(javascript, "./simplifile_js.mjs", "resolve")
+@external(python, "simplifile_bindings", "resolve")
 fn do_resolve(path: String) -> String
 
 /// Mimics the `touch` command, creating a file if it doesn't exist, and
@@ -821,6 +798,5 @@ fn do_resolve(path: String) -> String
 /// ```gleam
 /// let assert Ok(Nil) = touch("./new_or_existing_file.txt")
 /// ```
-@external(erlang, "simplifile_erl", "touch")
-@external(javascript, "./simplifile_js.mjs", "touch")
+@external(python, "simplifile_bindings", "touch")
 pub fn touch(at path: String) -> Result(Nil, FileError)

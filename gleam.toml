@@ -1,18 +1,13 @@
-name = "simplifile"
+name = "macabre_simplifile"
 version = "2.7.0"
-description = "Basic file operations that work on all targets"
+description = "Basic file operations that work on all targets (macabre python-target port of simplifile)"
 
 licences = ["Apache-2.0"]
-repository = { type = "github", user = "bcpeinhardt", repo = "simplifile" }
-gleam = ">= 1.11.0"
-# links = [{ title = "Website", href = "https://gleam.run" }]
-
-[javascript.deno]
-allow_all = true
+repository = { type = "github", user = "dusty-phillips", repo = "macabre_simplifile" }
 
 [dependencies]
 gleam_stdlib = ">= 0.34.0 and < 2.0.0"
-filepath = ">= 1.0.0 and < 2.0.0"
+macabre_filepath = { git = "git@github.com:dusty-phillips/macabre_filepath.git", ref = "main" }
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
