@@ -139,7 +139,20 @@ def read_bits(filepath):
     return _guard(op)
 
 
+def _ensure_byte_aligned(bits):
+    from gleam_builtins import GleamBitArray
+
+    if isinstance(bits, GleamBitArray) and bits.bits % 8 != 0:
+        return False
+    return True
+
+
 def write_bits(filepath, bits):
+    if not _ensure_byte_aligned(bits):
+        import simplifile as simplifile_module
+
+        return Error(simplifile_module.Einval())
+
     def op():
         with open(filepath, "wb") as file:
             file.write(bits)
@@ -149,6 +162,11 @@ def write_bits(filepath, bits):
 
 
 def append_bits(filepath, bits):
+    if not _ensure_byte_aligned(bits):
+        import simplifile as simplifile_module
+
+        return Error(simplifile_module.Einval())
+
     def op():
         with open(filepath, "ab") as file:
             file.write(bits)
@@ -157,30 +175,28 @@ def append_bits(filepath, bits):
     return _guard(op)
 
 
-def delete(file_or_dir_path):
+def delete(path):
     def op():
-        if os.path.isdir(file_or_dir_path) and not os.path.islink(
-            file_or_dir_path
-        ):
-            shutil.rmtree(file_or_dir_path)
+        if os.path.isdir(path) and not os.path.islink(path):
+            shutil.rmtree(path)
         else:
-            os.unlink(file_or_dir_path)
+            os.unlink(path)
         return Nil
 
     return _guard(op)
 
 
-def delete_file(file_path):
+def delete_file(path):
     def op():
-        os.unlink(file_path)
+        os.unlink(path)
         return Nil
 
     return _guard(op)
 
 
-def read_directory(filepath):
+def read_directory(path):
     def op():
-        return to_gleam_list(os.listdir(filepath))
+        return to_gleam_list(os.listdir(path))
 
     return _guard(op)
 
