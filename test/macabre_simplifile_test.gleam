@@ -1,6 +1,5 @@
 import gleam/int
 import gleam/list
-import gleam/result.{Error, Nil}
 import gleam/set
 import gleam/string
 import gleeunit
@@ -538,6 +537,11 @@ pub fn file_info_get_permissions_test() {
 }
 
 @target(erlang)
+pub fn get_files_with_slash_test() {
+  let assert Ok(files) = get_files(in: "./test/")
+  assert files == ["./test/simplifile_test.gleam"]
+}
+
 @target(javascript)
 pub fn get_files_with_slash_test() {
   let assert Ok(files) = get_files(in: "./test/")
@@ -834,8 +838,10 @@ pub fn unknown_errors_return_unknown_test() {
 
 // This is necessary to force unknown error generation uniformly across runtimes
 @target(erlang)
-@target(javascript)
 @external(erlang, "simplifile_erl", "create_directory")
+fn create_directory_with_bad_arg(arg: #(Nil, Nil)) -> Result(Nil, FileError)
+
+@target(javascript)
 @external(javascript, "./simplifile_js.mjs", "createDirectory")
 fn create_directory_with_bad_arg(arg: #(Nil, Nil)) -> Result(Nil, FileError)
 
