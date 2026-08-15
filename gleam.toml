@@ -6,8 +6,8 @@ licences = ["Apache-2.0"]
 repository = { type = "github", user = "dusty-phillips", repo = "macabre_simplifile" }
 
 [dependencies]
-gleam_stdlib = ">= 0.34.0 and < 2.0.0"
+gleam_stdlib = { git = "git@github.com:dusty-phillips/macabre_stdlib.git", ref = "main" }
 macabre_filepath = { git = "git@github.com:dusty-phillips/macabre_filepath.git", ref = "main" }
 
 [dev-dependencies]
-gleeunit = ">= 1.0.0 and < 2.0.0"
+gleeunit = { git = "git@github.com:dusty-phillips/macabre_gleeunit.git", ref = "main" }
