@@ -1,4 +1,4 @@
-name = "macabre_simplifile"
+name = "simplifile"
 version = "2.7.0"
 description = "Basic file operations that work on all targets (macabre python-target port of simplifile)"
 

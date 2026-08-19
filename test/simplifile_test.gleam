@@ -81,7 +81,7 @@ pub fn make_directory_test() {
   let the_directory = "./tmp/some_created_dir"
   let assert Ok(_) = create_directory(the_directory)
   let assert Error(_) = create_directory(the_directory)
-  let assert Error(_) = create_directory("./test/macabre_simplifile_test.gleam")
+  let assert Error(_) = create_directory("./test/simplifile_test.gleam")
   let assert Ok([]) = read_directory(the_directory)
   let assert Ok(_) = delete(the_directory)
 }
@@ -145,7 +145,7 @@ pub fn read_directory_test() {
   let assert True = list.contains(stuff, "test_inner_dir")
 
   // Verify errors on invalid uses
-  let assert Error(_) = read_directory(at: "./test/macabre_simplifile_test.gleam")
+  let assert Error(_) = read_directory(at: "./test/simplifile_test.gleam")
   let assert Error(_) = read_directory(at: "./tmp/i_dont_exist")
 
   // Cleanup
@@ -539,13 +539,13 @@ pub fn file_info_get_permissions_test() {
 @target(erlang)
 pub fn get_files_with_slash_test() {
   let assert Ok(files) = get_files(in: "./test/")
-  assert files == ["./test/macabre_simplifile_test.gleam"]
+  assert files == ["./test/simplifile_test.gleam"]
 }
 
 @target(javascript)
 pub fn get_files_with_slash_test() {
   let assert Ok(files) = get_files(in: "./test/")
-  assert files == ["./test/macabre_simplifile_test.gleam"]
+  assert files == ["./test/simplifile_test.gleam"]
 }
 
 @target(python)
@@ -554,7 +554,7 @@ pub fn get_files_with_slash_test() {
   // directory is never exactly this one file. The python target still asserts
   // the slash-prefixed listing includes this module.
   let assert Ok(files) = get_files(in: "./test/")
-  assert list.contains(files, "./test/macabre_simplifile_test.gleam")
+  assert list.contains(files, "./test/simplifile_test.gleam")
 }
 
 // This test is only for local development
